@@ -4,6 +4,8 @@ Uses perception lab 12:
 
 https://github.com/anttiluode/PerceptionLab
 
+(Has all the nodes) 
+
 Easier install: 
 
 https://huggingface.co/spaces/Aluode/PerceptionLabPortable
