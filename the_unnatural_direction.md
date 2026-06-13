@@ -122,13 +122,33 @@ The arrow does not merely point. It has a grain, and thinking is the act of payi
 
 Nothing above is worth keeping unless the engine can show it. Three concrete next builds, smallest first, each a falsifiable extension of code that already runs.
 
-**(a) Bill the reverse traversal — extend D3 from sign to cost.** `mycelial_mesh_proof.py` already runs a learned sequence forward and reverse and shows the skew circulation flips sign. Add the meter: with `MetabolicSpikeNode` on the recall stream, log total wattage (the integrated `|ds|` + spike cost) for the forward tour and for the reverse tour of the *same* learned cycle. The prediction is that the reverse traversal costs measurably more — more spikes, higher integrated wattage — and that the cost gap tracks `‖A‖`. If forward and reverse cost the same, the cost-asymmetry claim is wrong for this system. (Honest limit, unchanged: the readout is a structural proxy in relative units, not Joules, until `sigma_JN` is replaced by a calibrated bath and the per-spike cost is pinned to Attwell–Laughlin — the calibration this whole line keeps deferring.)
+**(a) Bill the reverse traversal — extend D3 from sign to cost. [DONE — verified]** `arrow_cost_proof.py` builds the smallest ruthless test: a cycle of patterns; a recurrent connectivity `J = J_sym + g·J_asym` whose asymmetric transition term is the write-side `A` (Sompolinsky–Kanter), with `g` the knob that sets `‖A‖`; the cycle driven forward vs reverse; and the cost billed by the delta-code meter.
+
+The result, in both the clean (orthonormal) and messy (non-orthonormal) cases:
+
+| g | ‖A‖ | surprise fwd | surprise rev | cost fwd | cost rev | gap |
+|---|---|---|---|---|---|---|
+| 0.00 | 0.000 | 1.27 | 1.27 | 308 | 308 | **0.0** |
+| 0.50 | 0.866 | 1.00 | 1.31 | 297 | 310 | 12.8 |
+| 1.00 | 1.732 | 0.80 | 1.33 | 289 | 311 | 21.6 |
+| 4.00 | 6.928 | 0.41 | 1.37 | 256 | 312 | **56.4** |
+
+`corr(gap, ‖A‖) = +0.99`. The four predictions held: the gap is **zero at detailed balance** (`g=0`, the control that proves the meter is not rigged), reverse costs more for every `g>0`, the gap tracks `‖A‖`, and the activity arrow flips sign forward vs reverse.
+
+Two things the run *taught* us, neither of which was obvious before building it, and both kept in the open:
+
+- **The cost lives in the prediction error, not the raw stream.** Billing the raw recall/field velocity `|ds|` is direction-blind — the change between consecutive patterns is identical either way (verified control: `|ds|` fwd = rev exactly). The asymmetry appears only when the meter is billed on the **surprise residual** `x − pred`, where `pred = norm(J·s)` is the learned current's guess for the next state. That residual is exactly Still et al.'s non-predictive information, and it is *where in the architecture* the Crooks cost is paid. (In the live node the residual is measured on the denoised recall, `recall − pred`, so the input corruption noise does not swamp it.)
+- **The gap is mostly a discount on the natural direction, not a tax on the reverse.** Forward cost falls (308 → 256) as the current strengthens; reverse stays near the baseline (308 → 312). Riding the carved current is the saving; going against it is forfeiting the saving, plus a little. That is more faithful than a naive "reverse burns extra" picture and it is the honest shape of the effect.
+
+This is now also a **live PerceptionLab build**, not only a standalone proof: `predictivecortexnode.py` (the Mycelial Cortex plus a learned node-space transition memory `T` — the write-side `A` — that predicts the next state and emits the `surprise` residual), a `metabolicspikenode.py` extended with an additive `surprise` input that bills the delta-code on that residual (back-compatible: absent the input it behaves exactly as before), and `sequencedrivernode.py` (a forward/reverse cycle source). The workflow `unnatural_direction_loop.json` wires them with the ATP loop: run it forward and watch surprise and wattage settle low as the cortex carves the current; flip the Sequence Driver to reverse and watch them jump; set the cortex `g=0` and the gap vanishes. Verified in the mock runtime: fwd surprise 0.77 / rev 1.41, wattage gap ≈ +13, arrow flips `−1.0 ↔ +1.0`, `g=0` gap ≈ 0. One design lesson worth recording: the transition memory must exclude self-loops and the demo drives one pattern per frame, because the directional cost lives only on frames where the state actually changes — mid-dwell, sitting on one pattern, carries no direction and no grain.
+
+(Honest limit, unchanged: the readout is a structural proxy in relative units, not Joules, until `sigma_JN` is replaced by a calibrated bath and the per-spike cost is pinned to Attwell–Laughlin — the calibration this whole line keeps deferring.)
 
 **(b) Federate the arrow.** Close the README's known gap: have `TokenRelayNode` preserve order (timestamp + sequence number, ordered delivery) and have `MycelialCortexNode` actually *consume* the received `chi` to update its winner-traffic lag-covariance, so the listener reconstructs the teacher's arrow and not only the teacher's content. Success criterion: teacher arrow `+x`, listener arrow `+x` (today it is `+0.017` vs `+0.000`).
 
 **(c) Test the consensus-cost prediction.** With (b) in place and two differently-organized peers converged on a consensus arrow, inject from a third peer a token stream whose *order* is the reverse of the consensus. The prediction, falsifiable three ways: the anti-consensus stream yields (i) lower recall confidence, (ii) more node spawns / fragmentation, and (iii) more tokens required before any integration — i.e. the anti-arrow direction is quantitatively the expensive one, at the network scale, exactly as Crooks demands at the single-flow scale. If anti-consensus order integrates as cheaply as consensus order, the "mesh grows a common sense" story is false and should be dropped.
 
-If (a) and (c) hold, the framework will have shown — in its own runnable code, with an honest ledger — that the arrow of time it reads, the entropy it produces, and the energy it spends to go *against* that arrow are one curve, at both the single-mesh and the federated scale. That is the cost-asymmetry version of the line's standing promise.
+With (a) done, the single-mesh half of the claim is shown in runnable code with an honest ledger: the arrow of time the engine reads and the energy it spends to go *against* that arrow are one curve, and the curve flattens to nothing at detailed balance. Builds (b) and (c) carry the same test to the federated scale; if (c) holds, the grain is a network property, not just a single-flow one — the cost-asymmetry version of the line's standing promise.
 
 ---
 
@@ -147,6 +167,11 @@ If (a) and (c) hold, the framework will have shown — in its own runnable code,
 - gradient (curl-free) half = field recall = cheap, time-blind hold; solenoidal (curl) half = `A` = the sequenced arrow that costs to maintain;
 - the basis-independent invariant two differently-organized peers can share is the circulation sign of `A` — the causal direction — which is why knowledge federates and weights do not.
 
+**Verified in code (single-mesh, structural proxy — build a):**
+- reverse traversal of a learned cycle costs more than forward; the cost gap is **zero at detailed balance** (`g=0`) and grows with `‖A‖` (`corr ≈ 0.99`); the activity arrow flips sign on reversal (`arrow_cost_proof.py`, and live in `predictivecortexnode.py` + the surprise-billed `metabolicspikenode.py`);
+- the cost is located at the **prediction-error residual** `x − pred` (Still et al.'s non-predictive information), not the raw recall stream — the raw `|ds|` is a verified-symmetric control;
+- the effect is, mechanically, a **discount on the natural direction** that grows with `‖A‖`, more than a tax on the reverse.
+
 **Model hypotheses (falsifiable, unproven):**
 - *abstraction is upstream work*: counterfactual / planning / symbolic / deliberative operations are the retention-and-manipulation of non-predictive information and the reverse-traversal of an established curl, hence the expensive direction (an interpretive bridge over Crooks + Still, not a theorem; and true of *forming*, not *using*, an abstraction);
 - *the mesh grows a common sense*: if the arrow federates, consensus-ordered tokens propagate cheaply and anti-consensus order dissipates and fragments, so the mesh converges on a shared low-dissipation arrow — which is the *well-worn* flow, explicitly **not** a guarantee of truth;
@@ -154,7 +179,7 @@ If (a) and (c) hold, the framework will have shown — in its own runnable code,
 
 **Honest limits:**
 - read-side flux vs write-side connectivity remain dual, not identical (carried from the rotation-half document, §6 there);
-- the engine's noise is dither, not a calibrated thermal bath, so all costs are structural proxies in relative units, not nats or Joules — the calibration is build (a)'s deferred step;
+- the engine's noise is dither, not a calibrated thermal bath, so all costs are structural proxies in relative units, not nats or Joules — build (a) is done, but the calibration to Joules it depends on is still deferred;
 - the federation prediction (§4, §6c) is untested because the live relay does not yet carry the arrow;
 - the global metabolic-cost-of-thought claim is contested; only the *local/structural* entropy-production increase under load (Lynn) is leaned on.
 
