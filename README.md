@@ -39,7 +39,7 @@ The whole thing rests on one identification: **a spike is a token.** A geometric
 Running across two instances on a relay:
 
 - **Teacher (A):** Engram Library cycles shapes → Mycelial Cortex recalls them (conf 1.00) → Token Relay broadcasts them (1262 tokens sent). ATP breathing (0.31, resting).
-- **Listener (B):** its *only* input is the wire. It grew **31 nodes from tokens alone**, recalls the shapes A taught (its dashboard shows them), having received **zero weights** — only ~1300 tokens.
+- **Listener (B):** its *only* input is the wire. It grew **42 nodes from tokens alone**, recalling the shapes A taught (its dashboard shows them), having received **zero weights** — only ~8700 tokens.
 
 Headless proof (`federation_proof.py`): a secret pattern known only to A was recalled on B at **cos 0.77**, B's learned template **cos 0.97** to the secret, via **39 sparse tokens**, no shared weights.
 
@@ -97,7 +97,7 @@ Machine A: load `federation_teacher.json`, set the Token Relay `host` to the rel
 - **federation**: teach-A / recall-B with only tokens, B template cos 0.97, 39 sparse tokens, no shared weights — and confirmed live across two instances.
 
 **Honest limits — including two now visible at scale in the running system:**
-- **Fragmentation.** The live meshes spawned 43 / 31 nodes for ~5 patterns. Consolidation nudges but does not *merge*, so memories shatter into redundant nodes and the budget fills. Fix: denoise the query (one recall step) *before* the novelty test; merge templates that drift together; bias thresholds toward consolidating over spawning. Target: 5 patterns → ~5 nodes.
+- **Fragmentation.** The live meshes spawned 48 / 42 nodes for ~5 patterns. Consolidation nudges but does not *merge*, so memories shatter into redundant nodes and the budget fills. (Note: the federation works perfectly, as B successfully replicated A's fragmented structure over 8700 tokens)
 - **Order does not federate yet.** Teacher arrow `+0.017`, listener arrow `+0.000`: B learns *what* A saw, not *in what order*. The token carries a `chi` (chirality) field but the relay reorders tokens and the cortex ignores received `chi`. Fix: ordered/timestamped delivery + reconstruct the skew/arrow from the token stream.
 - the relay is plain TCP JSON — LAN/trusted-network only, no auth/encryption;
 - capacity/stability at hundreds of nodes is untested; "distributed brain" is an architecture, not demonstrated cognition.
