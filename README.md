@@ -1,5 +1,17 @@
 # The Mycelial Cortex
 
+Uses perception lab 12: 
+
+https://github.com/anttiluode/PerceptionLab
+
+Easier install: 
+
+https://huggingface.co/spaces/Aluode/PerceptionLabPortable
+
+(Does not contain all the nodes) 
+
+The nodes folder here contains some other nodes from yesterday too. All of this relates to my earlier github repos. 
+
 ### A distributed holographic spiking substrate — geometric neurons that recall, grow, tire, read the arrow of time, and federate across machines with nothing but tokens
 
 ![pic1](sender.png)
