@@ -1,5 +1,7 @@
 # The Priming Tide
 
+![pic](rising_tide.png)
+
 ## How a slow chemical readiness gates a fast geometric resonance — the neuromodulatory primer of the Mycelial Cortex
 
 *PerceptionLab / Antti Luode, with Claude (Opus 4.8), and dialogue with Gemini. Helsinki, June 2026.*
