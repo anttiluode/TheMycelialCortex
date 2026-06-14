@@ -1,5 +1,7 @@
 # The Local Tilt — making *which way* real
 
+![pic](tilt.png)
+
 ## Addendum to The Priming Tide: the applied skew operator, gated by the tide
 
 *PerceptionLab / Antti Luode, with Claude (Opus 4.8). Helsinki, June 2026.*
